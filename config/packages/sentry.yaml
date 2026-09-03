@@ -3,3 +3,11 @@ when@prod:
         dsn: '%env(SENTRY_DSN)%'
         options:
             environment: '%kernel.environment%'
+            # LazyResponseException est un signal de contrôle interne de Symfony (pare-feu lazy) :
+            # Sentry\SentryBundle\EventListener\LoginListener force l'authentification sur
+            # kernel.request (getToken()), ce qui déclenche LazyResponseEvent::setResponse() côté
+            # Symfony — normalement intercepté et résolu par
+            # Symfony\Component\Security\Http\Firewall\ExceptionListener, mais Sentry la rapporte
+            # comme "Unhandled" avant cette résolution alors que la requête aboutit correctement.
+            ignore_exceptions:
+                - Symfony\Component\Security\Core\Exception\LazyResponseException
