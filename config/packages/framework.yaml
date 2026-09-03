@@ -5,6 +5,11 @@ framework:
     # Note that the session will be started ONLY if you read or write from it.
     session:
         handler_id: App\Security\Session\DoctrineSessionHandler
+        # Défaut PHP (1440s / 24 min) trop court pour une séance de musculation — les temps de
+        # repos entre séries/exercices dépassent régulièrement ce délai, expirant la session côté
+        # serveur (DoctrineSessionHandler) en pleine séance. 4h couvre une séance longue avec repos.
+        gc_maxlifetime: 14400
+        cookie_lifetime: 14400
 
     #esi: true
     #fragments: true
