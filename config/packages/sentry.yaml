@@ -9,5 +9,10 @@ when@prod:
             # Symfony — normalement intercepté et résolu par
             # Symfony\Component\Security\Http\Firewall\ExceptionListener, mais Sentry la rapporte
             # comme "Unhandled" avant cette résolution alors que la requête aboutit correctement.
+            # AccessDeniedException couvre aussi les refus des Voters métier (WorkoutVoter,
+            # RoutineVoter, ExerciseVoter) sur un utilisateur authentifié tentant d'accéder à la
+            # ressource d'un autre — accepté comme bruit ici (décision actée) plutôt qu'un filtrage
+            # ciblé via before_send, pour rester simple.
             ignore_exceptions:
                 - Symfony\Component\Security\Core\Exception\LazyResponseException
+                - Symfony\Component\Security\Core\Exception\AccessDeniedException
